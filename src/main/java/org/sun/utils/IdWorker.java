@@ -35,9 +35,9 @@ public class IdWorker {
     private long datacenterId;
 
     /**
-     * 开始时间截 (2015-01-01)
+     * 开始时间截 (2018-01-01)
      */
-    private final long twepoch = 1420041600000L;
+    private final long twepoch = 1514736000000L;
     /**
      * 毫秒内序列(0~4095)
      */
