@@ -1,4 +1,4 @@
-package org.sun.utils;
+package org.sun.common.utils;
 
 /**
  * Created by SongX on 2018/2/2.
