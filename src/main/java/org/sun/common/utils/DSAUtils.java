@@ -88,7 +88,7 @@ public class DSAUtils {
 
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         KeyPair keyPair = generateKeyPair();
         DSAPrivateKey dsaPrivateKey = (DSAPrivateKey)keyPair.getPrivate();
         DSAPublicKey dsaPublicKey = (DSAPublicKey)keyPair.getPublic();
