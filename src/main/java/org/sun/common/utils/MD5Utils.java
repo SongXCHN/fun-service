@@ -2,8 +2,8 @@ package org.sun.common.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sun.common.constant.AlgorithmConstant;
 
+import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 
 /**
@@ -13,13 +13,13 @@ public class MD5Utils {
     private static final Logger logger = LoggerFactory.getLogger(MD5Utils.class);
 
     private static final String algorithm = "MD5";
-    private static final String default_charset = "utf-8";
+    private static final String defaultCharset = "utf-8";
 
     public static String getMD5(String str) {
         try {
             // 获得MD5摘要算法的 MessageDigest 对象
             MessageDigest mdInst = MessageDigest.getInstance(algorithm);
-            byte[] btInput = str.getBytes(default_charset);
+            byte[] btInput = str.getBytes(defaultCharset);
             // 使用指定的字节更新摘要
             mdInst.update(btInput);
             // 获得密文
@@ -51,6 +51,6 @@ public class MD5Utils {
 
     public static void main(String[] args) {
 
-        System.out.println(getMD5("202CB962AC59075B964B07152D234B70"));
+        System.out.println(getMD5("9F6E6800CFAE7749EB6C486619254B9C"));
     }
 }

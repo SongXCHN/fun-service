@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Base64Utils;
 
 import java.security.*;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.DSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -16,8 +18,27 @@ public class DSAUtils {
 
 
     private static final String algorithm = "DSA";
-    private static final int key_size = 1024;
+    private static final int keySize = 1024;
     private static final String default_charset = "utf-8";
+
+    /**
+     * 随机生成密钥
+     *
+     * @return
+     */
+    public static KeyPair generateKeyPair() {
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance(algorithm);
+            keyGen.initialize(keySize);
+            KeyPair keyPair = keyGen.genKeyPair();
+            DSAPrivateKey dsaPrivateKey = (DSAPrivateKey)keyPair.getPrivate();
+            DSAPublicKey dsaPublicKey = (DSAPublicKey)keyPair.getPublic();
+            return keyPair;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
 
     /**
      * 签名
@@ -26,7 +47,7 @@ public class DSAUtils {
      * @param dsaPrivateKey
      * @return
      */
-    public static String sign(String inputStr, PrivateKey dsaPrivateKey) {
+    public static String sign(String inputStr, DSAPrivateKey dsaPrivateKey) {
         try {
             PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(dsaPrivateKey.getEncoded());
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
@@ -49,7 +70,7 @@ public class DSAUtils {
      * @param sign
      * @return
      */
-    public static boolean verify(String inputStr, PublicKey dsaPublicKey, String sign) {
+    public static boolean verify(String inputStr, DSAPublicKey dsaPublicKey, String sign) {
         try {
             X509EncodedKeySpec x509keySpec = new X509EncodedKeySpec(dsaPublicKey.getEncoded());
             KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
@@ -65,31 +86,18 @@ public class DSAUtils {
     }
 
 
-    public static KeyPair getKeyPair() {
-        try {
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance(algorithm);
-            keyGen.initialize(key_size);
-            KeyPair keyPair = keyGen.genKeyPair();
-            PrivateKey privateKey = keyPair.getPrivate();
-            PublicKey publicKey = keyPair.getPublic();
-            return keyPair;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
-    }
+
 
     public static void main(String[] args) throws Exception {
-        KeyPair keypair = getKeyPair();
-        PrivateKey dsaPrivateKey = keypair.getPrivate();
-        PublicKey dsaPublicKey = keypair.getPublic();
+        KeyPair keyPair = generateKeyPair();
+        DSAPrivateKey dsaPrivateKey = (DSAPrivateKey)keyPair.getPrivate();
+        DSAPublicKey dsaPublicKey = (DSAPublicKey)keyPair.getPublic();
 
         String sign = sign("1234", dsaPrivateKey);
 
         System.out.println(Base64Utils.encodeToString(dsaPublicKey.getEncoded()));
         System.out.println(Base64Utils.encodeToString(dsaPrivateKey.getEncoded()));
         System.out.println(sign);
-
         System.out.println(verify("1234", dsaPublicKey, sign));
     }
 }
