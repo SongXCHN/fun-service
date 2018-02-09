@@ -6,24 +6,41 @@ import org.slf4j.LoggerFactory;
 import java.security.MessageDigest;
 
 /**
- * Created by SongX on 2018/2/3.
+ * 摘要算法：MD5 < SHA256 < SHA512 (速度)
+ * Created by SongX on 2018/2/9.
  */
-public class MD5Utils {
-    private static final Logger logger = LoggerFactory.getLogger(MD5Utils.class);
+public class MessageDigestUtils {
 
-    private static final String algorithm = "MD5";
+    private static final Logger logger = LoggerFactory.getLogger(MessageDigestUtils.class);
+
+    private static final String MD5 = "MD5";
+    private static final String SHA_256 = "SHA-256";
+    private static final String SHA_512 = "SHA-512";
     private static final String defaultCharset = "utf-8";
 
-    public static String getMD5(String str) {
+    public static String MD5(String str) {
+        return hash(str, MD5);
+    }
+
+    public static String SHA256(String str) {
+        return hash(str, SHA_256);
+    }
+
+    public static String SHA512(String str) {
+        return hash(str, SHA_512);
+    }
+
+
+    private static String hash(String str, String algorithm) {
         try {
-            // 获得MD5摘要算法的 MessageDigest 对象
-            MessageDigest mdInst = MessageDigest.getInstance(algorithm);
+            // 获得 MessageDigest 对象
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
             byte[] btInput = str.getBytes(defaultCharset);
             // 使用指定的字节更新摘要
-            mdInst.update(btInput);
+            messageDigest.update(btInput);
             // 获得密文
-            byte[] mdStr = mdInst.digest();
-            return hexString(mdStr);
+            byte[] byteBuffer = messageDigest.digest();
+            return hexString(byteBuffer);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -47,9 +64,4 @@ public class MD5Utils {
         return stringBuffer.toString();
     }
 
-
-    public static void main(String[] args) {
-
-        System.out.println(getMD5("9F6E6800CFAE7749EB6C486619254B9C"));
-    }
 }
